@@ -87,7 +87,8 @@
     (ns ${app-name}
       (:gen-class))
 
-    (println "Hello, World!" )
+    (defn -main [ ]
+        (println "Hello, World!" ))
 
   </echo>
 
