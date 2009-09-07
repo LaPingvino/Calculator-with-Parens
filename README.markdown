@@ -19,7 +19,7 @@ Targets
 -------
 
 * run     - will setup required class path's and run the application
-* repare - will unzip necessary jar's to create a single executable jar.
+* prepare - will unzip necessary jar's to create a single executable jar.
 * compile - will build the application and create single executable jar.
 * clean   - will clean up the build folder and created jar.
 * deps    - can redownload needed jar's.
