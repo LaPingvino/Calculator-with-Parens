@@ -8,6 +8,19 @@
 <property name="extLibs.file" value="extLibs.zip"/>
 <property name="extLibs.url" value="http://cloud.github.com/downloads/nakkaya/clojure-stub/${extLibs.file}"/>
 
+  <target name="run" depends="">
+    <java classname="clojure.main" 
+	  fork="true" failonerror="true">  
+      <classpath>
+	<pathelement path="${src-dir}" />
+	<pathelement location="${extLibs.dir}/clojure.jar"/>
+	<pathelement location="${extLibs.dir}/clojure-contrib.jar"/>
+      </classpath>
+      
+      <arg value="${src-dir}/${app-name}.clj" />
+    </java>  
+  </target>
+
 <target name="prepare" depends="clean">
   <mkdir dir="${build-dir}" />  
   
