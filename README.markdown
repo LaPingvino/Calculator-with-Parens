@@ -18,10 +18,10 @@ repository. But you can point the download url to anywhere you like.
 Targets
 -------
 
-run     - will setup required class path's and run the application
-prepare - will unzip necessary jar's to create a single executable jar.
-compile - will build the application and create single executable jar.
-clean   - will clean up the build folder and created jar.
-deps    - can redownload needed jar's.
-setup   - is ran once to create all files required to create a "Hello,
+* run     - will setup required class path's and run the application
+* repare - will unzip necessary jar's to create a single executable jar.
+* compile - will build the application and create single executable jar.
+* clean   - will clean up the build folder and created jar.
+* deps    - can redownload needed jar's.
+* setup   - is ran once to create all files required to create a "Hello,
 World" application with your settings.
