@@ -1,0 +1,84 @@
+<project name="default" default="run"> 
+
+<property name="app-name" value="hello"/>
+<property name="app-jar" location="${app-name}.jar"/>
+<property name="src-dir" location="src/"/>
+<property name="build-dir" location="classes/"/>
+<property name="extLibs.dir" location="extLibs"/>
+<property name="extLibs.file" value="extLibs.zip"/>
+<property name="extLibs.url" value="http://cloud.github.com/downloads/nakkaya/clojure-stub/${extLibs.file}"/>
+
+<target name="prepare" depends="clean">
+  <mkdir dir="${build-dir}" />  
+  
+  <unzip dest="${build-dir}">
+    <fileset dir="extLibs/">
+      <include name="**/*.jar"/>
+    </fileset>
+  </unzip>
+
+  <delete dir="${build-dir}/META-INF/"/>
+</target>
+
+<target name="compile" depends="prepare">
+
+  <java classname="clojure.lang.Compile" fork="true" failonerror="true">  
+    <classpath>
+      <pathelement path="${src-dir}" />  
+      <pathelement path="${build-dir}" />
+    </classpath>
+
+    <sysproperty key="clojure.compile.path" value="${build-dir}" />
+    <arg value="${app-name}" /> 
+  </java>  
+
+  <jar destfile="${app-jar}"
+       basedir="${build-dir}">
+
+    <manifest>
+      <attribute name="Main-Class" value="${app-name}" />
+      <attribute name="Class-Path" value="./" />
+    </manifest>
+  </jar>
+
+  <delete dir="${build-dir}" />
+</target>
+
+<target name="clean">
+  <delete dir="${build-dir}" />
+  <delete file="${app.jar}"/>
+</target>
+
+<target name="deps" description="Download dependencies and unzip">
+  <get usetimestamp="true" 
+       description="Clojure dependencies." 
+       src="${extLibs.url}" 
+       dest="${extLibs.file}"/>
+
+  <unzip src="${extLibs.file}" dest="."/>
+
+  <delete file="${extLibs.file}"/>
+  <delete dir="__MACOSX"/>
+</target>
+
+<target name="check-setup">
+    <available file="README.markdown"  property="do.setup"/>
+</target>
+
+<target name="setup" depends="check-setup" if="do.setup">
+
+  <echo message="Creating Template"/>
+  <mkdir dir="${src-dir}" /> 
+
+  <echo file="${src-dir}/${app-name}.clj">
+    (ns ${app-name}
+      (:gen-class))
+
+    (println "Hello, World!" )
+
+  </echo>
+
+  <delete file="README.markdown"/>
+</target>
+
+</project>
