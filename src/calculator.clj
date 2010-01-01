@@ -83,7 +83,7 @@
       (.add get-result)
       (.add operate-on-2)
       (.setDefaultCloseOperation JFrame/EXIT_ON_CLOSE)
-      (.setSize 150 150)
+      (.setSize 75 600)
       (.setVisible true))))
 
 (defn -main [& cl-args]
