@@ -1,4 +1,4 @@
-(ns testproject (:gen-class))
+(ns calculator (:gen-class))
 
 (import '(javax.swing JFrame JLabel JTextField JButton)
         '(java.awt.event ActionListener)

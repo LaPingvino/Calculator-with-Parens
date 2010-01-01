@@ -1,6 +1,6 @@
 <project name="default" default="run"> 
 
-<property name="app-name" value="testproject"/>
+<property name="app-name" value="calculator"/>
 <property name="app-jar" location="${app-name}.jar"/>
 <property name="src-dir" location="src/"/>
 <property name="build-dir" location="classes/"/>
