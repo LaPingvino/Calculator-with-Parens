@@ -1,0 +1,4 @@
+(ns testproject (:gen-class))
+
+(defn -main [& cl-args]
+      (println "dummy"))
