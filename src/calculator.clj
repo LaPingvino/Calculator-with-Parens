@@ -65,9 +65,9 @@
         value-1 (JTextField.)
 	operator-selector (JButton. "?")
 	value-2 (JTextField.)
-	parens-1 (JButton. "()")
+	parens-1 (JButton. "( ... )")
 	result (JTextField.)
-	parens-2 (JButton. "()")
+	parens-2 (JButton. "( ... )")
 	operate-on-1 (JButton. "^")
 	get-result (JButton. "=")
 	operate-on-2 (JButton. "^")]
@@ -83,7 +83,7 @@
       (.add get-result)
       (.add operate-on-2)
       (.setDefaultCloseOperation JFrame/EXIT_ON_CLOSE)
-      (.setSize 450 75)
+      (.setSize 450 120)
       (.setVisible true))))
 
 (defn -main [& cl-args]
