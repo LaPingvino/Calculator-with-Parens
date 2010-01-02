@@ -16,21 +16,25 @@
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
                                                 (.setText operator-field "+")
+                                                (ref operator-fn (conj {operator-field +} operator-fn))
                                                 (.dispose frame))))
     (.addActionListener op--
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
                                                 (.setText operator-field "-")
+                                                (ref operator-fn (conj {operator-field -} operator-fn))
                                                 (.dispose frame))))
     (.addActionListener op-*
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
                                                 (.setText operator-field "*")
+                                                (ref operator-fn (conj {operator-field *} operator-fn))
                                                 (.dispose frame))))
     (.addActionListener op-div
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
                                                 (.setText operator-field "/")
+                                                (ref operator-fn (conj {operator-field /} operator-fn))
                                                 (.dispose frame))))
     
     ; Putting the elements on the grid
@@ -39,7 +43,7 @@
           (.add op-+) (.add op--)
           (.add op-*) (.add op-div)
           (.setDefaultCloseOperation JFrame/EXIT_ON_CLOSE)
-          (.setSize 80 80)
+          (.setSize 100 100)
           (.setVisible true))))
 
 (defn calculator [put-value clean-result]
@@ -54,7 +58,7 @@
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
                                                 (if (= (.getText result) "")
-                                                    (.setText result (str ((eval (.getText result))
+                                                    (.setText result (str ((get (deref operator-fn) operator-selector)
                                                                            (bigdec (str "0"(.getText value-1)))
                                                                            (bigdec (str "0" (.getText value-2))))))
                                                   (if put-value
@@ -86,5 +90,6 @@
           (.setVisible true))))
 
   (defn -main [& cl-args]
+    (ref operator-fn {})
     (calculator nil nil))
 
