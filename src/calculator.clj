@@ -9,7 +9,7 @@
   (let [frame (JFrame. "Select operator to be used")
     ; Elements ordered by appearance on the calculator
     op-+ (JButton. "+") op-- (JButton. "-")
-    op-* (JButton. "*") op-/ (JButton. "/")]
+    op-* (JButton. "*") op-div (JButton. "/")]
     
     ; Action listeners to Get Things Done
     (.addActionListener op-+
@@ -24,7 +24,7 @@
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
                                                 (.setText operator-field "*"))))
-    (.addActionListener op-/
+    (.addActionListener op-div
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
                                                 (.setText operator-field "/"))))
@@ -32,9 +32,8 @@
     ; Putting the elements on the grid
     (doto frame
           (.setLayout (GridLayout. 2 2))
-          (.add value-1) (.add operator-selector) (.add value-2)
-          (.add operate-on-1) (.add result) (.add operate-on-2)
-          (.add parens-1) (.add get-result) (.add parens-2)
+          (.add op-+) (.add op--)
+          (.add op-*) (.add op-div)
           (.setDefaultCloseOperation JFrame/EXIT_ON_CLOSE)
           (.setSize 80 80)
           (.setVisible true))))
