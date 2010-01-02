@@ -15,19 +15,23 @@
     (.addActionListener op-+
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
-                                                (.setText operator-field "+"))))
+                                                (.setText operator-field "+")
+                                                (.dispose frame))))
     (.addActionListener op--
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
-                                                (.setText operator-field "-"))))
+                                                (.setText operator-field "-")
+                                                (.dispose frame))))
     (.addActionListener op-*
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
-                                                (.setText operator-field "*"))))
+                                                (.setText operator-field "*")
+                                                (.dispose frame))))
     (.addActionListener op-div
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
-                                                (.setText operator-field "/"))))
+                                                (.setText operator-field "/")
+                                                (.dispose frame))))
     
     ; Putting the elements on the grid
     (doto frame
