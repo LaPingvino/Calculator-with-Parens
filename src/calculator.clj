@@ -58,9 +58,9 @@
 (defn calculator [put-value clean-result]
   (let [frame (JFrame. "Calculator")
     ; Elements ordered by appearance on the calculator
-    value-1 (JTextField.) operator-sel (JButton. "???")  value-2 (JTextField.)
+    value-1 (JTextField.) operator-sel (JButton. "Do on both")  value-2 (JTextField.)
     parens-1 (JButton. "( ... )") result (JTextField.) parens-2 (JButton. "( ... )")
-    operate-on-1 (JButton. "Put result") get-result (JButton. "=") operate-on-2 (JButton. "Put result")]
+    operate-on-1 (JButton. "Do with above") get-result (JButton. "Do with above") operate-on-2 (JButton. "Put result")]
     
     (.addActionListener operator-sel
                         (proxy [ActionListener] []
@@ -74,6 +74,14 @@
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
                                                 (calculator value-2 result))))
+    (.addActionListener get-result
+                        (proxy [ActionListener] []
+                               (actionPerformed [evt]
+                                                (if put-value
+                                                    (do (.setText put-value (.getText result))
+                                                        (.setText clean-result "")
+                                                      (.dispose frame))
+                                                  (System/exit 0)))))
     
     ; Putting the elements on the grid
     (doto frame
