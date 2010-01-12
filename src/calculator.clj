@@ -60,7 +60,7 @@
     ; Elements ordered by appearance on the calculator
     value-1 (JTextField.) operator-sel (JButton. "Do on both")  value-2 (JTextField.)
     parens-1 (JButton. "( ... )") result (JTextField.) parens-2 (JButton. "( ... )")
-    operate-on-1 (JButton. "Do with above") get-result (JButton. "Do with above") operate-on-2 (JButton. "Put result")]
+    operate-on-1 (JButton. "Do with above") get-result (JButton. "Return") operate-on-2 (JButton. "Do with above")]
     
     (.addActionListener operator-sel
                         (proxy [ActionListener] []
