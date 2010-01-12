@@ -78,13 +78,13 @@
     ; Putting the elements on the grid
     (doto frame
           (.setLayout (GridLayout. 3 3))
-          (.add value-1) (.add operator-sel) (.add value-2)
-          (.add operate-on-1) (.add result) (.add operate-on-2)
-          (.add parens-1) (.add get-result) (.add parens-2)
+          (.add value-1) (.add value-2) (.add operator-sel)
+          (.add operate-on-1) (.add operate-on-2) (.add result)
+          (.add parens-1) (.add parens-2) (.add get-result)
           (.setDefaultCloseOperation JFrame/EXIT_ON_CLOSE)
           (.setSize 450 120)
           (.setVisible true))))
 
-                                            (defn -main [& cl-args]
-                                              (calculator nil nil))
+(defn -main [& cl-args]
+  (calculator nil nil))
 
