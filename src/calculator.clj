@@ -5,37 +5,46 @@
         '(java.awt GridLayout)
         '(java.math.BigDecimal))
 
-(defn get-operator [operator-field]
-  (let [frame (JFrame. "Select operator to be used")
+(defn do-operation [value-1 value-2 result]
+  (let [frame (JFrame. "Calculator")
     ; Elements ordered by appearance on the calculator
-    op-+ (JButton. "+") op-- (JButton. "-")
-    op-* (JButton. "*") op-div (JButton. "/")]
+    op-+ (JButton. "+") op-* (JButton. "*")
+    op-- (JButton. "-") op-div (JButton. "/")]
     
     ; Action listeners to Get Things Done
     (.addActionListener op-+
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
-                                                (.setText operator-field "+")
-                                                (ref operator-fn (conj {operator-field +} operator-fn))
-                                                (.dispose frame))))
+                                                (do
+                                                    (.setText result (str (+
+                                                                           (bigdec (str "0" (.getText value-1)))
+                                                                           (bigdec (str "0" (.getText value-2))))))
+                                                    (.dispose frame)))))
     (.addActionListener op--
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
-                                                (.setText operator-field "-")
-                                                (ref operator-fn (conj {operator-field -} operator-fn))
-                                                (.dispose frame))))
+                                                (do
+                                                    (.setText result (str (-
+                                                                           (bigdec (str "0" (.getText value-1)))
+                                                                           (bigdec (str "0" (.getText value-2))))))
+                                                    (.dispose frame)))))
     (.addActionListener op-*
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
-                                                (.setText operator-field "*")
-                                                (ref operator-fn (conj {operator-field *} operator-fn))
-                                                (.dispose frame))))
+                                                (do
+                                                    (.setText result (str (*
+                                                                           (bigdec (str "0" (.getText value-1)))
+                                                                           (bigdec (str "0" (.getText value-2))))))
+                                                    (.dispose frame)))))
+    
     (.addActionListener op-div
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
-                                                (.setText operator-field "/")
-                                                (ref operator-fn (conj {operator-field /} operator-fn))
-                                                (.dispose frame))))
+                                                (do
+                                                    (.setText result (str (/
+                                                                           (bigdec (str "0" (.getText value-1)))
+                                                                           (bigdec (str "0" (.getText value-2))))))
+                                                    (.dispose frame)))))
     
     ; Putting the elements on the grid
     (doto frame
@@ -43,29 +52,20 @@
           (.add op-+) (.add op--)
           (.add op-*) (.add op-div)
           (.setDefaultCloseOperation JFrame/EXIT_ON_CLOSE)
-          (.setSize 100 100)
+          (.setSize 450 120)
           (.setVisible true))))
 
 (defn calculator [put-value clean-result]
   (let [frame (JFrame. "Calculator")
     ; Elements ordered by appearance on the calculator
-    value-1 (JTextField.) operator-selector (JButton. "?") value-2 (JTextField.)
+    value-1 (JTextField.) operator-sel (JButton. "???")  value-2 (JTextField.)
     parens-1 (JButton. "( ... )") result (JTextField.) parens-2 (JButton. "( ... )")
     operate-on-1 (JButton. "Put result") get-result (JButton. "=") operate-on-2 (JButton. "Put result")]
     
-    ; Action listeners to Get Things Done
-    (.addActionListener get-result
+    (.addActionListener operator-sel
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
-                                                (if (= (.getText result) "")
-                                                    (.setText result (str ((get (deref operator-fn) operator-selector)
-                                                                           (bigdec (str "0"(.getText value-1)))
-                                                                           (bigdec (str "0" (.getText value-2))))))
-                                                  (if put-value
-                                                      (do (.setText put-value (.getText result))
-                                                          (.setText clean-result "")
-                                                        (.dispose frame))
-                                                    (System/exit 0))))))
+                                                (do-operation value-1 value-2 result))))
     (.addActionListener parens-1
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
@@ -74,22 +74,17 @@
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
                                                 (calculator value-2 result))))
-    (.addActionListener operator-selector
-                        (proxy [ActionListener] []
-                               (actionPerformed [evt]
-                                                (get-operator operator-selector))))
     
     ; Putting the elements on the grid
     (doto frame
           (.setLayout (GridLayout. 3 3))
-          (.add value-1) (.add operator-selector) (.add value-2)
+          (.add value-1) (.add operator-sel) (.add value-2)
           (.add operate-on-1) (.add result) (.add operate-on-2)
           (.add parens-1) (.add get-result) (.add parens-2)
           (.setDefaultCloseOperation JFrame/EXIT_ON_CLOSE)
           (.setSize 450 120)
           (.setVisible true))))
 
-  (defn -main [& cl-args]
-    (ref operator-fn {})
-    (calculator nil nil))
+                                            (defn -main [& cl-args]
+                                              (calculator nil nil))
 
