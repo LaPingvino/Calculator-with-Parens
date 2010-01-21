@@ -5,7 +5,20 @@
         '(java.awt GridLayout)
         '(java.math.BigDecimal))
 
-(defn do-operation [value-1 value-2 result]
+(defn apply-calc
+  
+  ([operation value frame]
+   (.setText value (str (operation
+                         (bigdec (str "0" (.getText value))))))
+   (.dispose frame))
+  
+  ([operation value-1 value-2 result frame]
+   (.setText result (str (operation
+                          (bigdec (str "0" (.getText value-1)))
+                          (bigdec (str "0" (.getText value-2))))))
+   (.dispose frame)))
+
+(defn do-on-both [value-1 value-2 result]
   (let [frame (JFrame. "Calculator")
     ; Elements ordered by appearance on the calculator
     op-+ (JButton. "+") op-* (JButton. "*")
@@ -15,42 +28,44 @@
     (.addActionListener op-+
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
-                                                (do
-                                                    (.setText result (str (+
-                                                                           (bigdec (str "0" (.getText value-1)))
-                                                                           (bigdec (str "0" (.getText value-2))))))
-                                                    (.dispose frame)))))
+                                                (apply-calc + value-1 value-2 result frame))))
     (.addActionListener op--
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
-                                                (do
-                                                    (.setText result (str (-
-                                                                           (bigdec (str "0" (.getText value-1)))
-                                                                           (bigdec (str "0" (.getText value-2))))))
-                                                    (.dispose frame)))))
+                                                (apply-calc - value-1 value-2 result frame))))
     (.addActionListener op-*
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
-                                                (do
-                                                    (.setText result (str (*
-                                                                           (bigdec (str "0" (.getText value-1)))
-                                                                           (bigdec (str "0" (.getText value-2))))))
-                                                    (.dispose frame)))))
-    
+                                                (apply-calc * value-1 value-2 result frame))))
     (.addActionListener op-div
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
-                                                (do
-                                                    (.setText result (str (/
-                                                                           (bigdec (str "0" (.getText value-1)))
-                                                                           (bigdec (str "0" (.getText value-2))))))
-                                                    (.dispose frame)))))
+                                                (apply-calc / value-1 value-2 result frame))))
     
     ; Putting the elements on the grid
     (doto frame
           (.setLayout (GridLayout. 2 2))
           (.add op-+) (.add op--)
           (.add op-*) (.add op-div)
+          (.setDefaultCloseOperation JFrame/EXIT_ON_CLOSE)
+          (.setSize 450 120)
+          (.setVisible true))))
+
+(defn do-on-one [value]
+  (let [frame (JFrame. "Calculator")
+    ; Elements ordered by appearance on the calculator
+    op-square (JButton. "x²")]
+    
+    ; Action listeners to Get Things Done
+    (.addActionListener op-square
+                        (proxy [ActionListener] []
+                               (actionPerformed [evt]
+                                                (apply-calc (fn [x] (* x x)) value frame))))
+    
+    ; Putting the elements on the grid
+    (doto frame
+          (.setLayout (GridLayout. 1 1))
+          (.add op-square)
           (.setDefaultCloseOperation JFrame/EXIT_ON_CLOSE)
           (.setSize 450 120)
           (.setVisible true))))
@@ -65,7 +80,7 @@
     (.addActionListener operator-sel
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
-                                                (do-operation value-1 value-2 result))))
+                                                (do-on-both value-1 value-2 result))))
     (.addActionListener parens-1
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
@@ -74,6 +89,14 @@
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
                                                 (calculator value-2 result))))
+    (.addActionListener operate-on-1
+                        (proxy [ActionListener] []
+                               (actionPerformed [evt]
+                                                (do-on-one value-1))))
+    (.addActionListener operate-on-2
+                        (proxy [ActionListener] []
+                               (actionPerformed [evt]
+                                                (do-on-one value-2))))
     (.addActionListener get-result
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
