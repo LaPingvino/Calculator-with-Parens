@@ -3,15 +3,19 @@
 (import '(javax.swing JFrame JLabel JTextField JButton)
         '(java.awt.event ActionListener)
         '(java.awt GridLayout)
-        '(java.math.BigDecimal))
+        '(java.math.BigDecimal)
+	'(java.lang.Math))
+
 
 (defn apply-calc
-  
+
+;; Operate on itself
   ([operation value frame]
-   (.setText value (str (operation
-                         (bigdec (str "0" (.getText value))))))
+   (.setText value (str (bigdec (operation
+                         (bigdec (str "0" (.getText value)))))))
    (.dispose frame))
   
+;; Operate on two elements and put away
   ([operation value-1 value-2 result frame]
    (.setText result (str (operation
                           (bigdec (str "0" (.getText value-1)))
@@ -20,11 +24,11 @@
 
 (defn do-on-both [value-1 value-2 result]
   (let [frame (JFrame. "Calculator")
-    ; Elements ordered by appearance on the calculator
-    op-+ (JButton. "+") op-* (JButton. "*")
+    ;; Elements ordered by appearance on the calculator
+    op-+ (JButton. "+") op-* (JButton. "*") op-pow (JButton. "x^y")
     op-- (JButton. "-") op-div (JButton. "/")]
     
-    ; Action listeners to Get Things Done
+    ;; Action listeners to Get Things Done
     (.addActionListener op-+
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
@@ -41,11 +45,15 @@
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
                                                 (apply-calc / value-1 value-2 result frame))))
+    (.addActionListener op-pow
+                        (proxy [ActionListener] []
+                               (actionPerformed [evt]
+                                                (apply-calc (fn [x y] (Math/pow x y)) value-1 value-2 result frame))))
     
-    ; Putting the elements on the grid
+    ;; Putting the elements on the grid
     (doto frame
-          (.setLayout (GridLayout. 2 2))
-          (.add op-+) (.add op--)
+          (.setLayout (GridLayout. 2 3))
+          (.add op-+) (.add op--) (.add op-pow)
           (.add op-*) (.add op-div)
           (.setDefaultCloseOperation JFrame/EXIT_ON_CLOSE)
           (.setSize 450 120)
@@ -53,26 +61,30 @@
 
 (defn do-on-one [value]
   (let [frame (JFrame. "Calculator")
-    ; Elements ordered by appearance on the calculator
-    op-square (JButton. "x²")]
+    ;; Elements ordered by appearance on the calculator
+    op-square (JButton. "x²") op-sqrt (JButton. "√")]
     
-    ; Action listeners to Get Things Done
+    ;; Action listeners to Get Things Done
     (.addActionListener op-square
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
                                                 (apply-calc (fn [x] (* x x)) value frame))))
+    (.addActionListener op-sqrt
+                        (proxy [ActionListener] []
+                               (actionPerformed [evt]
+                                                (apply-calc (fn [x] (Math/sqrt x)) value frame))))
     
-    ; Putting the elements on the grid
+    ;; Putting the elements on the grid
     (doto frame
-          (.setLayout (GridLayout. 1 1))
-          (.add op-square)
+          (.setLayout (GridLayout. 1 2))
+          (.add op-square) (.add op-sqrt)
           (.setDefaultCloseOperation JFrame/EXIT_ON_CLOSE)
           (.setSize 450 120)
           (.setVisible true))))
 
 (defn calculator [put-value clean-result]
   (let [frame (JFrame. "Calculator")
-    ; Elements ordered by appearance on the calculator
+    ;; Elements ordered by appearance on the calculator
     value-1 (JTextField.) operator-sel (JButton. "Do on both")  value-2 (JTextField.)
     parens-1 (JButton. "( ... )") result (JTextField.) parens-2 (JButton. "( ... )")
     operate-on-1 (JButton. "Do with above") get-result (JButton. "Return") operate-on-2 (JButton. "Do with above")]
@@ -106,7 +118,7 @@
                                                       (.dispose frame))
                                                   (System/exit 0)))))
     
-    ; Putting the elements on the grid
+    ;; Putting the elements on the grid
     (doto frame
           (.setLayout (GridLayout. 3 3))
           (.add value-1) (.add value-2) (.add operator-sel)
