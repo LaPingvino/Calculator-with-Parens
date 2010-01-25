@@ -65,7 +65,8 @@
 (defn do-on-one [value]
   (let [frame (JFrame. "Calculator")
     ;; Elements ordered by appearance on the calculator
-    op-square (JButton. "x²") op-sqrt (JButton. "√")]
+    op-square (JButton. "x²") op-sqrt (JButton. "√") val-pi (JButton. "π")
+    op-sin (JButton. "sin") op-cos (JButton. "cos") op-tan (JButton. "tan")]
     
     ;; Action listeners to Get Things Done
     (.addActionListener op-square
@@ -76,11 +77,28 @@
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
                                                 (apply-calc (fn [x] (Math/sqrt x)) value frame))))
+    (.addActionListener val-pi
+                        (proxy [ActionListener] []
+                               (actionPerformed [evt]
+                                                (apply-calc (fn [x] (Math/PI)) value frame))))
+    (.addActionListener op-sin
+                        (proxy [ActionListener] []
+                               (actionPerformed [evt]
+                                                (apply-calc (fn [x] (Math/sin x)) value frame))))
+    (.addActionListener op-cos
+                        (proxy [ActionListener] []
+                               (actionPerformed [evt]
+                                                (apply-calc (fn [x] (Math/cos x)) value frame))))
+    (.addActionListener op-tan
+                        (proxy [ActionListener] []
+                               (actionPerformed [evt]
+                                                (apply-calc (fn [x] (Math/tan x)) value frame))))
     
     ;; Putting the elements on the grid
     (doto frame
-          (.setLayout (GridLayout. 1 2))
-          (.add op-square) (.add op-sqrt)
+          (.setLayout (GridLayout. 2 3))
+          (.add op-square) (.add op-sqrt) (.add val-pi)
+	  (.add op-sin) (.add op-cos) (.add op-tan)
           (.setSize 450 120)
           (.setVisible true))))
 
