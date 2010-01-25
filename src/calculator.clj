@@ -4,35 +4,38 @@
         '(java.awt.event ActionListener)
         '(java.awt GridLayout)
         '(java.math.BigDecimal)
-	'(java.lang.Math))
+        '(java.lang.Math))
 
+(defn button-listener [name frame whattodo]
+  (.addActionListener name (proxy [ActionListener] [] (actionPerformed [evt] (whattodo frame)))))
+
+(defn add-button [frame label whattodo]
+  (let [name (JButton. label)]
+    (button-listener name frame whattodo)
+    (.add frame name)))
 
 (defn apply-calc
-
-;; Operate on itself
+  
+  ;; Operate on itself
   ([operation value frame]
    (.setText value (str (bigdec (try (operation
-                         (bigdec (str "0" (.getText value)))) (catch Exception e "#!ERR")))))
+                                      (bigdec (str "0" (.getText value)))) (catch Exception e "#!ERR")))))
    (.dispose frame))
   
-;; Operate on two elements and put away
+  ;; Operate on two elements and put away
   ([operation value-1 value-2 result frame]
    (.setText result (str (try (operation
-                          (bigdec (str "0" (.getText value-1)))
-                          (bigdec (str "0" (.getText value-2)))) (catch Exception e "#!ERR"))))
+                               (bigdec (str "0" (.getText value-1)))
+                               (bigdec (str "0" (.getText value-2)))) (catch Exception e "#!ERR"))))
    (.dispose frame)))
 
 (defn do-on-both [value-1 value-2 result]
   (let [frame (JFrame. "Calculator")
     ;; Elements ordered by appearance on the calculator
-    op-+ (JButton. "+") op-* (JButton. "*") op-pow (JButton. "x^y")
+    op-* (JButton. "*") op-pow (JButton. "x^y")
     op-- (JButton. "-") op-div (JButton. "/") op-root (JButton. "y√x")]
     
     ;; Action listeners to Get Things Done
-    (.addActionListener op-+
-                        (proxy [ActionListener] []
-                               (actionPerformed [evt]
-                                                (apply-calc + value-1 value-2 result frame))))
     (.addActionListener op--
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
@@ -57,7 +60,8 @@
     ;; Putting the elements on the grid
     (doto frame
           (.setLayout (GridLayout. 2 3))
-          (.add op-+) (.add op--) (.add op-pow)
+          (add-button "+" (fn [frame] (apply-calc + value-1 value-2 result frame)))
+          (.add op--) (.add op-pow)
           (.add op-*) (.add op-div) (.add op-root)
           (.setSize 450 120)
           (.setVisible true))))
@@ -98,7 +102,7 @@
     (doto frame
           (.setLayout (GridLayout. 2 3))
           (.add op-square) (.add op-sqrt) (.add val-pi)
-	  (.add op-sin) (.add op-cos) (.add op-tan)
+          (.add op-sin) (.add op-cos) (.add op-tan)
           (.setSize 450 120)
           (.setVisible true))))
 
