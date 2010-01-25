@@ -1,6 +1,6 @@
 (ns calculator (:gen-class))
 
-(import '(javax.swing JFrame JLabel JTextField JButton)
+(import '(javax.swing JFrame JLabel JTextField JButton UIManager)
         '(java.awt.event ActionListener)
         '(java.awt GridLayout)
         '(java.math.BigDecimal)
@@ -12,14 +12,14 @@
 ;; Operate on itself
   ([operation value frame]
    (.setText value (str (bigdec (try (operation
-                         (bigdec (str "0" (.getText value)))) (catch Exception e "error")))))
+                         (bigdec (str "0" (.getText value)))) (catch Exception e "#!ERR")))))
    (.dispose frame))
   
 ;; Operate on two elements and put away
   ([operation value-1 value-2 result frame]
    (.setText result (str (try (operation
                           (bigdec (str "0" (.getText value-1)))
-                          (bigdec (str "0" (.getText value-2)))) (catch Exception e "error"))))
+                          (bigdec (str "0" (.getText value-2)))) (catch Exception e "#!ERR"))))
    (.dispose frame)))
 
 (defn do-on-both [value-1 value-2 result]
@@ -59,7 +59,6 @@
           (.setLayout (GridLayout. 2 3))
           (.add op-+) (.add op--) (.add op-pow)
           (.add op-*) (.add op-div) (.add op-root)
-          (.setDefaultCloseOperation JFrame/EXIT_ON_CLOSE)
           (.setSize 450 120)
           (.setVisible true))))
 
@@ -82,7 +81,6 @@
     (doto frame
           (.setLayout (GridLayout. 1 2))
           (.add op-square) (.add op-sqrt)
-          (.setDefaultCloseOperation JFrame/EXIT_ON_CLOSE)
           (.setSize 450 120)
           (.setVisible true))))
 
@@ -128,10 +126,11 @@
           (.add value-1) (.add value-2) (.add operator-sel)
           (.add operate-on-1) (.add operate-on-2) (.add result)
           (.add parens-1) (.add parens-2) (.add get-result)
-          (.setDefaultCloseOperation JFrame/EXIT_ON_CLOSE)
+          (if (= put-value nil) (.setDefaultCloseOperation JFrame/EXIT_ON_CLOSE))
           (.setSize 450 120)
           (.setVisible true))))
 
 (defn -main [& cl-args]
+  (UIManager/setLookAndFeel (UIManager/getSystemLookAndFeelClassName))
   (calculator nil nil))
 
