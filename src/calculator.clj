@@ -19,18 +19,18 @@
   ;; Operate on itself
   ([operation value frame]
    (.setText value (str (bigdec (try (operation
-                                      (bigdec (str "0" (.getText value)))) (catch Exception e "#!ERR")))))
+                                      (bigdec (str "0" (.getText value)))) (catch Exception e (str "Error: " (.getMessage e)))))))
    (.dispose frame))
   
   ;; Operate on two elements and put away
   ([operation value-1 value-2 result frame]
    (.setText result (str (try (operation
                                (bigdec (str "0" (.getText value-1)))
-                               (bigdec (str "0" (.getText value-2)))) (catch Exception e "#!ERR"))))
+                               (bigdec (str "0" (.getText value-2)))) (catch Exception e (str "Error: " (.getMessage e))))))
    (.dispose frame)))
 
 (defn do-on-both [value-1 value-2 result]
-  (let [frame (JFrame. "Calculator")]
+  (let [frame (JFrame. "Choose operator")]
     (doto frame
           (.setLayout (GridLayout. 2 3))
           (add-button "+" (fn [frame] (apply-calc + value-1 value-2 result frame)))
@@ -43,87 +43,35 @@
           (.setVisible true))))
 
 (defn do-on-one [value]
-  (let [frame (JFrame. "Calculator")
-    ;; Elements ordered by appearance on the calculator
-    op-square (JButton. "x²") op-sqrt (JButton. "√") val-pi (JButton. "π")
-    op-sin (JButton. "sin") op-cos (JButton. "cos") op-tan (JButton. "tan")]
-    
-    ;; Action listeners to Get Things Done
-    (.addActionListener op-square
-                        (proxy [ActionListener] []
-                               (actionPerformed [evt]
-                                                (apply-calc (fn [x] (* x x)) value frame))))
-    (.addActionListener op-sqrt
-                        (proxy [ActionListener] []
-                               (actionPerformed [evt]
-                                                (apply-calc (fn [x] (Math/sqrt x)) value frame))))
-    (.addActionListener val-pi
-                        (proxy [ActionListener] []
-                               (actionPerformed [evt]
-                                                (apply-calc (fn [x] (Math/PI)) value frame))))
-    (.addActionListener op-sin
-                        (proxy [ActionListener] []
-                               (actionPerformed [evt]
-                                                (apply-calc (fn [x] (Math/sin x)) value frame))))
-    (.addActionListener op-cos
-                        (proxy [ActionListener] []
-                               (actionPerformed [evt]
-                                                (apply-calc (fn [x] (Math/cos x)) value frame))))
-    (.addActionListener op-tan
-                        (proxy [ActionListener] []
-                               (actionPerformed [evt]
-                                                (apply-calc (fn [x] (Math/tan x)) value frame))))
-    
-    ;; Putting the elements on the grid
+  (let [frame (JFrame. "Choose operator")]
     (doto frame
           (.setLayout (GridLayout. 2 3))
-          (.add op-square) (.add op-sqrt) (.add val-pi)
-          (.add op-sin) (.add op-cos) (.add op-tan)
+          (add-button "x²" (fn [frame] (apply-calc (fn [x] (* x x)) value frame)))
+          (add-button "√" (fn [frame] (apply-calc (fn [x] (Math/sqrt x)) value frame)))
+          (add-button "π" (fn [frame] (apply-calc (fn [x] (Math/PI)) value frame)))
+          (add-button "sin" (fn [frame] (apply-calc (fn [x] (Math/sin x)) value frame)))
+          (add-button "cos" (fn [frame] (apply-calc (fn [x] (Math/cos x)) value frame)))
+          (add-button "tan" (fn [frame] (apply-calc (fn [x] (Math/tan x)) value frame)))
           (.setSize 450 120)
           (.setVisible true))))
 
 (defn calculator [put-value clean-result]
   (let [frame (JFrame. "Calculator")
-    ;; Elements ordered by appearance on the calculator
-    value-1 (JTextField.) operator-sel (JButton. "Do on both")  value-2 (JTextField.)
-    parens-1 (JButton. "( ... )") result (JTextField.) parens-2 (JButton. "( ... )")
-    operate-on-1 (JButton. "Do with above") get-result (JButton. "Return") operate-on-2 (JButton. "Do with above")]
-    
-    (.addActionListener operator-sel
-                        (proxy [ActionListener] []
-                               (actionPerformed [evt]
-                                                (do-on-both value-1 value-2 result))))
-    (.addActionListener parens-1
-                        (proxy [ActionListener] []
-                               (actionPerformed [evt]
-                                                (calculator value-1 result))))
-    (.addActionListener parens-2
-                        (proxy [ActionListener] []
-                               (actionPerformed [evt]
-                                                (calculator value-2 result))))
-    (.addActionListener operate-on-1
-                        (proxy [ActionListener] []
-                               (actionPerformed [evt]
-                                                (do-on-one value-1))))
-    (.addActionListener operate-on-2
-                        (proxy [ActionListener] []
-                               (actionPerformed [evt]
-                                                (do-on-one value-2))))
-    (.addActionListener get-result
-                        (proxy [ActionListener] []
-                               (actionPerformed [evt]
-                                                (if put-value
+    value-1 (JTextField.) value-2 (JTextField.) result (JTextField.)]
+    (doto frame
+          (.setLayout (GridLayout. 3 3))
+          (.add value-1) (.add value-2)
+          (add-button "Do on both" (fn [x] (do-on-both value-1 value-2 result)))
+          (add-button "Do with above" (fn [x] (do-on-one value-1)))
+          (add-button "Do with above" (fn [x] (do-on-one value-2)))
+          (.add result)
+          (add-button "( ... )" (fn [x] (calculator value-1 result)))
+          (add-button "( ... )" (fn [x] (calculator value-2 result)))
+          (add-button "Result" (fn [x] (if put-value
                                                     (do (.setText put-value (.getText result))
                                                         (.setText clean-result "")
                                                       (.dispose frame))
-                                                  (System/exit 0)))))
-    
-    ;; Putting the elements on the grid
-    (doto frame
-          (.setLayout (GridLayout. 3 3))
-          (.add value-1) (.add value-2) (.add operator-sel)
-          (.add operate-on-1) (.add operate-on-2) (.add result)
-          (.add parens-1) (.add parens-2) (.add get-result)
+                                                  (System/exit 0))))
           (if (= put-value nil) (.setDefaultCloseOperation JFrame/EXIT_ON_CLOSE))
           (.setSize 450 120)
           (.setVisible true))))
