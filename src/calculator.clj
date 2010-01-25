@@ -26,7 +26,7 @@
   (let [frame (JFrame. "Calculator")
     ;; Elements ordered by appearance on the calculator
     op-+ (JButton. "+") op-* (JButton. "*") op-pow (JButton. "x^y")
-    op-- (JButton. "-") op-div (JButton. "/")]
+    op-- (JButton. "-") op-div (JButton. "/") op-root (JButton. "y√x")]
     
     ;; Action listeners to Get Things Done
     (.addActionListener op-+
@@ -49,12 +49,16 @@
                         (proxy [ActionListener] []
                                (actionPerformed [evt]
                                                 (apply-calc (fn [x y] (Math/pow x y)) value-1 value-2 result frame))))
+    (.addActionListener op-root
+                        (proxy [ActionListener] []
+                               (actionPerformed [evt]
+                                                (apply-calc (fn [x y] (Math/pow x (/ 1 y))) value-1 value-2 result frame))))
     
     ;; Putting the elements on the grid
     (doto frame
           (.setLayout (GridLayout. 2 3))
           (.add op-+) (.add op--) (.add op-pow)
-          (.add op-*) (.add op-div)
+          (.add op-*) (.add op-div) (.add op-root)
           (.setDefaultCloseOperation JFrame/EXIT_ON_CLOSE)
           (.setSize 450 120)
           (.setVisible true))))
