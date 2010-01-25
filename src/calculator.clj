@@ -30,39 +30,15 @@
    (.dispose frame)))
 
 (defn do-on-both [value-1 value-2 result]
-  (let [frame (JFrame. "Calculator")
-    ;; Elements ordered by appearance on the calculator
-    op-* (JButton. "*") op-pow (JButton. "x^y")
-    op-- (JButton. "-") op-div (JButton. "/") op-root (JButton. "y√x")]
-    
-    ;; Action listeners to Get Things Done
-    (.addActionListener op--
-                        (proxy [ActionListener] []
-                               (actionPerformed [evt]
-                                                (apply-calc - value-1 value-2 result frame))))
-    (.addActionListener op-*
-                        (proxy [ActionListener] []
-                               (actionPerformed [evt]
-                                                (apply-calc * value-1 value-2 result frame))))
-    (.addActionListener op-div
-                        (proxy [ActionListener] []
-                               (actionPerformed [evt]
-                                                (apply-calc / value-1 value-2 result frame))))
-    (.addActionListener op-pow
-                        (proxy [ActionListener] []
-                               (actionPerformed [evt]
-                                                (apply-calc (fn [x y] (Math/pow x y)) value-1 value-2 result frame))))
-    (.addActionListener op-root
-                        (proxy [ActionListener] []
-                               (actionPerformed [evt]
-                                                (apply-calc (fn [x y] (Math/pow x (/ 1 y))) value-1 value-2 result frame))))
-    
-    ;; Putting the elements on the grid
+  (let [frame (JFrame. "Calculator")]
     (doto frame
           (.setLayout (GridLayout. 2 3))
           (add-button "+" (fn [frame] (apply-calc + value-1 value-2 result frame)))
-          (.add op--) (.add op-pow)
-          (.add op-*) (.add op-div) (.add op-root)
+          (add-button "*" (fn [frame] (apply-calc * value-1 value-2 result frame)))
+          (add-button "x^y" (fn [frame] (apply-calc (fn [x y] (Math/pow x y)) value-1 value-2 result frame)))
+          (add-button "-" (fn [frame] (apply-calc - value-1 value-2 result frame)))
+          (add-button "/" (fn [frame] (apply-calc / value-1 value-2 result frame)))
+          (add-button "y√x" (fn [frame] (apply-calc (fn [x y] (Math/pow x (/ 1 y))) value-1 value-2 result frame)))
           (.setSize 450 120)
           (.setVisible true))))
 
