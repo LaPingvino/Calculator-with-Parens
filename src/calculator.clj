@@ -11,15 +11,15 @@
 
 ;; Operate on itself
   ([operation value frame]
-   (.setText value (str (bigdec (operation
-                         (bigdec (str "0" (.getText value)))))))
+   (.setText value (str (bigdec (try (operation
+                         (bigdec (str "0" (.getText value)))) (catch Exception e "error")))))
    (.dispose frame))
   
 ;; Operate on two elements and put away
   ([operation value-1 value-2 result frame]
-   (.setText result (str (operation
+   (.setText result (str (try (operation
                           (bigdec (str "0" (.getText value-1)))
-                          (bigdec (str "0" (.getText value-2))))))
+                          (bigdec (str "0" (.getText value-2)))) (catch Exception e "error"))))
    (.dispose frame)))
 
 (defn do-on-both [value-1 value-2 result]
