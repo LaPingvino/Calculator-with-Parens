@@ -12,7 +12,8 @@
 (defn add-button [frame label whattodo]
   (let [name (JButton. label)]
     (button-listener name frame whattodo)
-    (.add frame name)))
+    (.add frame name)
+    name))
 
 (defn apply-calc
   
